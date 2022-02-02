@@ -32,7 +32,7 @@ class App extends React.Component {
         if (this.props.history.location.pathname === '/signin') {
           this.props.history.push('/');
         }
-        console.log(this.state.currentUser)
+        // console.log(this.state.currentUser)
       } else {
         this.setState({ currentUser: userAuth });
       }

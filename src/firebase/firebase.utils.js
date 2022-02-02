@@ -47,7 +47,7 @@ export const authSignUpWithEmailPassword = async (email, password, displayName) 
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  console.log({...additionalData});
+  // console.log({...additionalData});
   // const db = getFirestore();
   const userRef = doc(db, "users", userAuth.uid);
   let docSnap = await getDoc(userRef);
