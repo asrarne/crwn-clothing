@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import {
           getAuth, GoogleAuthProvider,
-          signInWithPopup, createUserWithEmailAndPassword
+          signInWithPopup, createUserWithEmailAndPassword,
+          signInWithEmailAndPassword
         } from "firebase/auth";
 import { doc, getFirestore, getDoc, setDoc } from "firebase/firestore";
 
@@ -22,6 +23,16 @@ googleAuthProvider.setCustomParameters({ prompt: "select_account" });
 // export const signInWithPopup = signInWithPopup();
 const signInWithGoogle = () => signInWithPopup(auth, googleAuthProvider);
 const db = getFirestore();
+
+export const authSignInWithEmailPassword = async (email, password) => {
+  try {
+        await signInWithEmailAndPassword(auth, email, password);
+  }catch(error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(` Error in user SignIn, ${errorCode}:${errorMessage}` );
+  };
+}
 
 export const authSignUpWithEmailPassword = async (email, password, displayName) => {
   try {
