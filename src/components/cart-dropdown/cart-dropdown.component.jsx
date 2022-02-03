@@ -7,7 +7,7 @@ import './cart-dropdown.styles.scss';
 
 const CartDropdown = ({cartItems}) => (
     <div className='cart-dropdown'>
-        <div className='cart-item'>
+        <div className='cart-items'>
             {cartItems.length === 0 ? <span className='text'>Your cart is empty</span> :
                 cartItems.map(cartItem => <CartItem key={cartItem.id} item={cartItem}/>)}
         </div>
