@@ -33,9 +33,9 @@ class App extends React.Component {
         // });
         // console.log('history.location.pathname: ', this.props.history.location.pathname);
         // console.log('this.props.history: ', this.props.history);
-        if (this.props.history.location.pathname === "/signin") {
-          this.props.history.push("/");
-        }
+        // if (this.props.history.location.pathname === "/signin") {
+        //   this.props.history.push("/");
+        // }
         // console.log(this.state.currentUser)
       } else {
         // this.setState({ currentUser: userAuth });
