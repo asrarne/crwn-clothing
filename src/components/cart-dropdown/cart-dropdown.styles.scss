@@ -17,7 +17,13 @@
       flex-direction: column;
       overflow: scroll;
     }
-  
+    
+    .text {
+      text-align: center;
+      // margin: 100px auto;
+      margin: 50% 25%;
+    }
+    
     button {
       margin-top: auto;
     }
