@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+
 import {
   addItemToCart,
   removeItemFromCart,
@@ -15,6 +16,7 @@ const CheckoutItem = ({
   removeItemFromCheckout,
 }) => {
   const { imageUrl, name, quantity, price } = cartItem;
+
   const handleRemove = () => {
     removeItemFromCheckout(cartItem);
   };
