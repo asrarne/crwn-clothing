@@ -3,9 +3,10 @@ import React from "react";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 
-import { authSignUpWithEmailPassword } from "../../firebase/firebase.utils";
+import { authSignUpWithEmailPassword, createUserProfileDocument } from "../../firebase/firebase.utils";
 
-import "./sign-up.styles.scss";
+// import "./sign-up.styles.scss";
+import { SignUpContainer, SignUpTitle } from "./sugn-up.styles";
 
 class SignUp extends React.Component {
   constructor() {
@@ -28,6 +29,7 @@ class SignUp extends React.Component {
     }
     try {
       await authSignUpWithEmailPassword(email, password, displayName);
+      await createUserProfileDocument(email, password, displayName);
       this.setState({
         displayName: "",
         email: "",
@@ -35,7 +37,9 @@ class SignUp extends React.Component {
         confirmPassword: "",
       });
     } catch (error) {
-      console.log("Error in sign-up: ", error);
+      // const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(`Error in sign-up: ${errorMessage}`);
     }
   };
 
@@ -47,8 +51,8 @@ class SignUp extends React.Component {
   render() {
     const { displayName, email, password, confirmPassword } = this.state;
     return (
-      <div className="sign-up">
-        <h2>I do not have an account</h2>
+      <SignUpContainer>
+        <SignUpTitle>I do not have an account</SignUpTitle>
         <span>Sign up with your email and password</span>
         <form onSubmit={this.handleSubmit}>
           <FormInput
@@ -83,11 +87,9 @@ class SignUp extends React.Component {
             required
             handleChange={this.handleChange}
           />
-          <div className="buttons">
-            <CustomButton type="submit">SIGN UP</CustomButton>
-          </div>
+          <CustomButton type="submit">SIGN UP</CustomButton>
         </form>
-      </div>
+      </SignUpContainer>
     );
   }
 }

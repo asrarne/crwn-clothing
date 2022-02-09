@@ -6,7 +6,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, getFirestore, getDoc, setDoc } from "firebase/firestore";
+import {
+  writeBatch,
+  collection,
+  doc,
+  getFirestore,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -27,46 +34,43 @@ googleAuthProvider.setCustomParameters({ prompt: "select_account" });
 
 const signInWithGoogle = () => signInWithPopup(auth, googleAuthProvider);
 
-const db = getFirestore();
+export const db = getFirestore();
 
-export const authSignInWithEmailPassword = async (email, password) => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(` Error in user SignIn, ${errorCode}:${errorMessage}`);
-  }
+
+
+//populating data into firestore - it is one time activity
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const batch = writeBatch(db);
+  objectsToAdd.forEach((obj) => {
+    const collectionRef = doc(collection(db, collectionKey));
+    batch.set(collectionRef, obj);
+  });
+  return await batch.commit();
 };
 
+// Authenticate user on sigin
+export const authSignInWithEmailPassword = async (email, password) => {
+  await signInWithEmailAndPassword(auth, email, password);
+};
+
+// create Auth for new user
 export const authSignUpWithEmailPassword = async (
   email,
   password,
   displayName
 ) => {
-  try {
-    const { user } = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    return createUserProfileDocument(user, { displayName });
-  } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(` Error in user SignUp, ${errorCode}:${errorMessage}`);
-  }
+  await createUserWithEmailAndPassword(auth, email, password);
 };
 
+//Create new user in firestore
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  // console.log({...additionalData});
-  // const db = getFirestore();
+
   const userRef = doc(db, "users", userAuth.uid);
   let docSnap = await getDoc(userRef);
-
-  // console.log(docSnap.exists());
-  // console.log(JSON.stringify(docSnap));
 
   if (!docSnap.exists()) {
     const { displayName, email } = userAuth;
