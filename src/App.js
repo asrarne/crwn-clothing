@@ -9,48 +9,18 @@ import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
 
-import {
-  auth,
-  createUserProfileDocument,
-  // addCollectionAndDocuments,
-} from "./firebase/firebase.utils";
-
-import { setCurrentUser } from "./redux/user/user-actions";
+import { getUserOnAuthStateChangeStart } from "./redux/user/user-actions";
 import { selectCurrentUser } from "./redux/user/user-selectors";
-// import { selectShopCollectionsPreview } from "./redux/shop/shop-selectors";
 
 import "./App.css";
 
 class App extends React.Component {
-  unsubscribeFromAuth = null;
-
   componentDidMount() {
-    const {
-      setCurrentUser,
-      // collectionsArray
-    } = this.props;
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
-        const userSnap = await createUserProfileDocument(userAuth);
-        setCurrentUser({
-          id: userSnap.id,
-          ...userSnap.data(),
-        });
-      } else {
-        this.props.setCurrentUser(userAuth);
-      }
-    });
-    // addCollectionAndDocuments(
-    //   "collections",
-    //   collectionsArray.map(({ title, items }) => ({ title, items }))
-    // );
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
+    this.props.getUserOnAuthStateChangeStart();
   }
 
   render() {
+    const { currentUser } = this.props;
     return (
       <div>
         <Header />
@@ -61,11 +31,7 @@ class App extends React.Component {
             exact
             path="/signin"
             render={() =>
-              this.props.currentUser ? (
-                <Redirect to="/" />
-              ) : (
-                <SignInAndSignUpPage />
-              )
+              currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
             }
           />
           <Route exact path="/checkout" component={CheckoutPage} />
@@ -77,11 +43,11 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  // collectionsArray: selectShopCollectionsPreview,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  getUserOnAuthStateChangeStart: () =>
+    dispatch(getUserOnAuthStateChangeStart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

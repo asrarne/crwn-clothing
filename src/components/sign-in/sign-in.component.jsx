@@ -1,16 +1,21 @@
 import React from "react";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 
-import signInWithGoogle, {
-  authSignInWithEmailPassword,
-} from "../../firebase/firebase.utils";
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from "../../redux/user/user-actions";
+import { selectErrorMessage } from "../../redux/user/user-selectors";
 
 // import "./sign-in.styles.scss";
 import {
   SignInContainer,
   SignInTitle,
+  SignInError,
   SignInButtonContainer,
 } from "./sign-in.styles";
 
@@ -26,16 +31,10 @@ class SignIn extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = this.state;
-    try {
-      await authSignInWithEmailPassword(email, password);
-      
-      this.setState({ email: "", password: "" });
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(`Error in sign-in: ${errorCode}: ${errorMessage}`);
-      // console.log(` Error in authSignInWithEmailPassword, ${errorCode}:${errorMessage}`);
-    }
+
+    this.props.emailSignInStart(email, password);
+
+    this.setState({ email: "", password: "" });
   };
 
   handleChange = (e) => {
@@ -44,10 +43,12 @@ class SignIn extends React.Component {
   };
 
   render() {
+    const { googleSignInStart, selectErrorMessage } = this.props;
     return (
       <SignInContainer>
         <SignInTitle>I already have an account</SignInTitle>
         <span>Sign in with your email and password</span>
+        {selectErrorMessage && <SignInError>{selectErrorMessage}</SignInError>}
         <form onSubmit={this.handleSubmit}>
           <FormInput
             name="email"
@@ -69,7 +70,7 @@ class SignIn extends React.Component {
             <CustomButton type="submit">SIGN IN</CustomButton>
             <CustomButton
               type="button"
-              onClick={signInWithGoogle}
+              onClick={googleSignInStart}
               isGoogleSignIn
             >
               SIGN IN WITH GOOGLE
@@ -81,4 +82,14 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+const mspStateToProps = createStructuredSelector({
+  selectErrorMessage: selectErrorMessage,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  googleSignInStart: () => dispatch(googleSignInStart()),
+  emailSignInStart: (email, password) =>
+    dispatch(emailSignInStart({ email, password })),
+});
+
+export default connect(mspStateToProps, mapDispatchToProps)(SignIn);

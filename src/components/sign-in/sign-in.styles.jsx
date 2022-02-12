@@ -1,4 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const commonStyle = css`
+  margin: 10px 0;
+`;
 
 export const SignInContainer = styled.div`
   width: 380px;
@@ -7,7 +11,12 @@ export const SignInContainer = styled.div`
 `;
 
 export const SignInTitle = styled.h2`
-  margin: 10px 0;
+  ${commonStyle}
+`;
+
+export const SignInError = styled.span`
+  color: red;
+  ${commonStyle};
 `;
 
 export const SignInButtonContainer = styled.div`
