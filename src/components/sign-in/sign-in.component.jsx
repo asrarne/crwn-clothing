@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
@@ -11,7 +11,6 @@ import {
 } from "../../redux/user/user-actions";
 import { selectErrorMessage } from "../../redux/user/user-selectors";
 
-// import "./sign-in.styles.scss";
 import {
   SignInContainer,
   SignInTitle,
@@ -19,68 +18,69 @@ import {
   SignInButtonContainer,
 } from "./sign-in.styles";
 
-class SignIn extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      password: "",
-    };
-  }
+const SignIn = ({
+  emailSignInStart,
+  googleSignInStart,
+  selectErrorMessage,
+}) => {
+  const [ userCredentials, setUserCredentials] = useState({
+    email: '',
+    password: ''
+  });
+  const {email, password} = userCredentials;
 
-  handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = this.state;
+    // const { email, password } = this.state;
 
-    this.props.emailSignInStart(email, password);
-
-    this.setState({ email: "", password: "" });
+    emailSignInStart(email, password);
+    setUserCredentials({
+      email: '',
+    password: ''
+    })
   };
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { value, name } = e.target;
-    this.setState({ [name]: value });
+    setUserCredentials({...userCredentials, [name]: value});
   };
 
-  render() {
-    const { googleSignInStart, selectErrorMessage } = this.props;
-    return (
-      <SignInContainer>
-        <SignInTitle>I already have an account</SignInTitle>
-        <span>Sign in with your email and password</span>
-        {selectErrorMessage && <SignInError>{selectErrorMessage}</SignInError>}
-        <form onSubmit={this.handleSubmit}>
-          <FormInput
-            name="email"
-            type="email"
-            value={this.state.email}
-            label="email"
-            required
-            handleChange={this.handleChange}
-          />
-          <FormInput
-            name="password"
-            type="password"
-            value={this.state.password}
-            label="password"
-            required
-            handleChange={this.handleChange}
-          />
-          <SignInButtonContainer>
-            <CustomButton type="submit">SIGN IN</CustomButton>
-            <CustomButton
-              type="button"
-              onClick={googleSignInStart}
-              isGoogleSignIn
-            >
-              SIGN IN WITH GOOGLE
-            </CustomButton>
-          </SignInButtonContainer>
-        </form>
-      </SignInContainer>
-    );
-  }
-}
+  return (
+    <SignInContainer>
+      <SignInTitle>I already have an account</SignInTitle>
+      <span>Sign in with your email and password</span>
+      {selectErrorMessage && <SignInError>{selectErrorMessage}</SignInError>}
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          name="email"
+          type="email"
+          value={email}
+          label="email"
+          required
+          handleChange={handleChange}
+        />
+        <FormInput
+          name="password"
+          type="password"
+          value={password}
+          label="password"
+          required
+          handleChange={handleChange}
+        />
+        <SignInButtonContainer>
+          <CustomButton type="submit">SIGN IN</CustomButton>
+          <CustomButton
+            type="button"
+            onClick={googleSignInStart}
+            isGoogleSignIn
+          >
+            SIGN IN WITH GOOGLE
+          </CustomButton>
+        </SignInButtonContainer>
+      </form>
+    </SignInContainer>
+  );
+};
 
 const mspStateToProps = createStructuredSelector({
   selectErrorMessage: selectErrorMessage,
