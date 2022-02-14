@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { Route } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import CollectionsOverviewContainer from "../../components/collections-overview/collection-overview.container";
 import CollectionPageContainer from "../collection/collection.container";
 
 import { fetch_collections_start } from "../../redux/shop/shop-actions";
 
-const ShopPage = ({ fetch_collections_start, match }) => {
-  useEffect(() => {
-    fetch_collections_start();
-  }, [fetch_collections_start]);
+const ShopPage = ({ match }) => {
+  const dispatch = useDispatch();
+
+  useLayoutEffect(() => {
+    dispatch(fetch_collections_start());
+  }, [dispatch]);
 
   return (
     <div>
@@ -27,8 +29,4 @@ const ShopPage = ({ fetch_collections_start, match }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  fetch_collections_start: () => dispatch(fetch_collections_start()),
-});
-
-export default connect(null, mapDispatchToProps)(ShopPage);
+export default ShopPage;

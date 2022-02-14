@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
   addItemToCart,
@@ -7,7 +7,6 @@ import {
   removeItemFromCheckout,
 } from "../../redux/cart/cart-actions";
 
-// import "./checkout-item.styles.scss";
 import {
   CheckoutItemContainer,
   ImageContainer,
@@ -19,24 +18,20 @@ import {
   RemoveButtonContainer,
 } from "./checkout-item.styles";
 
-const CheckoutItem = ({
-  cartItem,
-  addItemToCart,
-  removeItemFromCart,
-  removeItemFromCheckout,
-}) => {
+const CheckoutItem = ({ cartItem }) => {
   const { imageUrl, name, quantity, price } = cartItem;
+  const dispatch = useDispatch();
 
   const handleRemove = () => {
-    removeItemFromCheckout(cartItem);
+    dispatch(removeItemFromCheckout(cartItem));
   };
 
   const handleDecreaseQuantity = () => {
-    removeItemFromCart(cartItem);
+    dispatch(removeItemFromCart(cartItem));
   };
 
   const handleIncreaseQuantity = () => {
-    addItemToCart(cartItem);
+    dispatch(addItemToCart(cartItem));
   };
 
   return (
@@ -58,10 +53,4 @@ const CheckoutItem = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  addItemToCart: (item) => dispatch(addItemToCart(item)),
-  removeItemFromCart: (item) => dispatch(removeItemFromCart(item)),
-  removeItemFromCheckout: (item) => dispatch(removeItemFromCheckout(item)),
-});
-
-export default connect(null, mapDispatchToProps)(CheckoutItem);
+export default CheckoutItem;

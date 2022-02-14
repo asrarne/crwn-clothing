@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { addItemToCart } from "../../redux/cart/cart-actions";
 
@@ -10,20 +10,19 @@ import {
   AddButton,
   BackgroundImage,
   NameContainer,
-  PriceContainer
+  PriceContainer,
 } from "./collection-item.styles";
 
-const CollectionItem = ({ item, addItemToCart }) => {
-  //   console.log(item);
+const CollectionItem = ({ item }) => {
   const { imageUrl, name, price } = item;
-
+  const dispatch = useDispatch();
   const handleAddItem = (e) => {
-    addItemToCart(item);
+    dispatch(addItemToCart(item));
   };
 
   return (
     <CollectionItemContainer>
-      <BackgroundImage className='image' imageUrl={imageUrl}/>
+      <BackgroundImage className="image" imageUrl={imageUrl} />
       <CollectionFooterContainer>
         <NameContainer>{name}</NameContainer>
         <PriceContainer>{price}</PriceContainer>
@@ -35,8 +34,4 @@ const CollectionItem = ({ item, addItemToCart }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  addItemToCart: (data) => dispatch(addItemToCart(data)),
-});
-
-export default connect(null, mapDispatchToProps)(CollectionItem);
+export default CollectionItem;
